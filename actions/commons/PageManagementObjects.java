@@ -9,7 +9,9 @@ import PageObjects.SignUpPageObject;
 
 public class PageManagementObjects {
 	
+	
 	public static HomePageObject getHomePageObject(WebDriver driver) {
+		System.out.println("driver page management :" + driver.toString());
 		return new HomePageObject(driver);
 	}
 	

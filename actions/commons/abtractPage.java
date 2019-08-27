@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class abtractPage {
@@ -35,6 +36,11 @@ public class abtractPage {
 	public String getTextElement(WebDriver driver, String locator) {
 		element = driver.findElement(By.xpath(locator));
 		return element.getText();
+	}
+	
+	public String getAttributeValue(WebDriver driver, String locator, String value) {
+		element = driver.findElement(By.xpath(locator));
+		return element.getAttribute(value);
 	}
 	
 	public String getTextElement(WebDriver driver, String locator, String...values) {
@@ -177,9 +183,52 @@ public class abtractPage {
 		return js.executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 	
+	public void selectDropdownByVisibleText(WebDriver driver, String locator, String text) {
+		element = driver.findElement(By.xpath(locator));
+		select = new Select(element);
+		select.selectByVisibleText(text);
+	}
 	
+	public void selectDropdownByValue(WebDriver driver, String locator, String value) {
+		element = driver.findElement(By.xpath(locator));
+		select = new Select(element);
+		select.selectByValue(value);
+	}
+	
+	public void selectDropdownByIndex(WebDriver driver, String locator, int index) {
+		element = driver.findElement(By.xpath(locator));
+		select = new Select(element);
+		select.selectByIndex(index);
+	}
+	
+	public String getFirstOptionSelect(WebDriver driver, String locator) {
+		element = driver.findElement(By.xpath(locator));
+		select = new Select(element);
+		return select.getFirstSelectedOption().getText();
+	}
+	
+	public void SelectDropdownListMultiOption(WebDriver driver, String parentLocator, String allElementLocator, String valueText) {
+		js = (JavascriptExecutor) driver;
+		WebElement parent = driver.findElement(By.xpath(parentLocator));
+		js.executeScript("arguments[0].click();", parent);
+		
+		wait = new WebDriverWait(driver, constants.LONG_TIME);
+		wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(allElementLocator)));
+		
+		elements = driver.findElements(By.xpath(allElementLocator));
+		
+		for(WebElement expectedElement : elements) {
+			if(expectedElement.getText().equals(valueText)) {
+				expectedElement.click();
+			}else {
+				js.executeScript("arguments[0].scrollIntoView(true);", expectedElement);
+				js.executeScript("arguments[0].click();", expectedElement);
+			}
+		}
+	}
 	
 	WebElement element;
+	Select select;
 	List<WebElement> elements;
 	WebDriverWait wait;
 	By byLocator;
